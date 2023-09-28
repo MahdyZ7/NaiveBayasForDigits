@@ -45,6 +45,16 @@ class NaiveBayes:
 	def predict(self, X):
 		return np.array([self._calculate_posterior(x) for x in X])
 
+	def report(self, target, output, string):
+		print(string, "\n\n")
+		print(metrics.classification_report(target, output, digits=2))
+		print(metrics.confusion_matrix(target, output))
+		print("Overall Accuracy: ", "%.2f" % metrics.accuracy_score(target, output))
+		print("Overall precision score: ", "%.2f" % metrics.precision_score(target, output, average='weighted'))
+		print("Overall Recall score: ", "%.2f" % metrics.recall_score(target, output, average='weighted'))
+		print("Overall F1 score: ", "%.2f" % metrics.f1_score(target, output, average='weighted'))
+		print("\n\n")
+
 
 # Main program
 	# define consants
@@ -54,6 +64,7 @@ SPLIT_RATIO = 0.3
 digits = datasets.load_digits()
 	#print some data info
 print("Data set headers: ", digits.keys())
+print(digits.DESCR)
 print("Size of data", digits.data.shape)
 
 
@@ -71,13 +82,17 @@ print("The training data size is: ", train_data.shape,"The testing data size is:
 
 # train the data
 clf.fit(train_data, train_target)
+# test on training data
+train_prediction = clf.predict(train_data)
+clf.report(train_target, train_prediction, "Training Data")
 # pridict the data
 predicted = clf.predict(test_data)
+clf = clf.report(test_target, predicted, "Testing Data")
 
-print("Accuracy: ", metrics.accuracy_score(test_target, predicted))
-print("Precision: ", metrics.precision_score(test_target, predicted, average='weighted'))
-print("Recall: ", metrics.recall_score(test_target, predicted, average='weighted'))
-print("F1 score: ", metrics.f1_score(test_target, predicted, average='weighted'))
+# print("Accuracy: ", metrics.accuracy_score(test_target, predicted))
+# print("Precision: ", metrics.precision_score(test_target, predicted, average='weighted'))
+# print("Recall: ", metrics.recall_score(test_target, predicted, average='weighted'))
+# print("F1 score: ", metrics.f1_score(test_target, predicted, average='weighted'))
 
-print(metrics.classification_report(test_target, predicted, digits=2))
-print(metrics.confusion_matrix(test_target, predicted))
+# print(metrics.classification_report(test_target, predicted, digits=2))
+# print(metrics.confusion_matrix(test_target, predicted))
